@@ -1,0 +1,193 @@
+{
+ "n_samples": 177,
+ "n_papers": 12,
+ "n_features": 8,
+ "features": [
+  "system",
+  "method_family",
+  "solvent_family",
+  "ligand_family",
+  "temp_C",
+  "time_min",
+  "ligand_amount",
+  "precursor_ratio"
+ ],
+ "excluded_features": [
+  "emission_nm",
+  "stability_*",
+  "plqy_method"
+ ],
+ "seed": 42,
+ "label_distribution": {
+  "mean": 60.03,
+  "std": 31.9,
+  "min": 0.7,
+  "median": 65.0,
+  "max": 100.0
+ },
+ "caveats": [
+  "模型 R² 低于中位数基线：当前特征不足以支撑可靠预测，结论只能当趋势参考。",
+  "仅 12 篇文献，同源泄漏与文献间系统性差异无法充分分离，指标不具备外推意义。",
+  "数值特征缺失率最高达 100%，模型主要靠体系/方法类别与少量温度样本学习。",
+  "文献只报最优条件，存在选择性报告偏差；PLQY 测量口径（积分球/相对法）大多未记录。"
+ ],
+ "baselines": {
+  "dummy_median": {
+   "mean_MAE": 26.324,
+   "mean_R2": -0.119,
+   "worst_fold_MAE": 32.26
+  },
+  "linear": {
+   "mean_MAE": 29.168,
+   "mean_R2": -0.843,
+   "worst_fold_MAE": 37.846
+  },
+  "system_mean": {
+   "mean_MAE": 27.362,
+   "mean_R2": -0.138,
+   "worst_fold_MAE": 33.9
+  }
+ },
+ "group_kfold": {
+  "split": "GroupKFold(n_splits=5, groups=doi)",
+  "params": {
+   "learning_rate": 0.05,
+   "num_leaves": 3,
+   "n_estimators": 200,
+   "min_child_samples": 12
+  },
+  "folds": [
+   {
+    "n": 61,
+    "MAE": 29.293,
+    "RMSE": 35.411,
+    "R2": -0.09,
+    "fold": 1,
+    "n_train": 116,
+    "n_test": 61,
+    "n_papers_test": 1
+   },
+   {
+    "n": 30,
+    "MAE": 21.222,
+    "RMSE": 27.977,
+    "R2": -0.026,
+    "fold": 2,
+    "n_train": 147,
+    "n_test": 30,
+    "n_papers_test": 2
+   },
+   {
+    "n": 29,
+    "MAE": 31.079,
+    "RMSE": 34.271,
+    "R2": -0.0,
+    "fold": 3,
+    "n_train": 148,
+    "n_test": 29,
+    "n_papers_test": 3
+   },
+   {
+    "n": 28,
+    "MAE": 31.096,
+    "RMSE": 37.564,
+    "R2": -0.416,
+    "fold": 4,
+    "n_train": 149,
+    "n_test": 28,
+    "n_papers_test": 3
+   },
+   {
+    "n": 29,
+    "MAE": 20.445,
+    "RMSE": 23.836,
+    "R2": -0.101,
+    "fold": 5,
+    "n_train": 148,
+    "n_test": 29,
+    "n_papers_test": 3
+   }
+  ],
+  "mean_MAE": 26.627,
+  "worst_fold_MAE": 31.096,
+  "mean_R2": -0.127,
+  "worst_fold_R2": -0.416,
+  "overall": {
+   "n": 177,
+   "MAE": 27.053,
+   "RMSE": 32.765,
+   "R2": -0.055
+  }
+ },
+ "holdout": {
+  "split": "GroupShuffleSplit(test_size=0.2, groups=doi)",
+  "n_train": 135,
+  "n_test": 42,
+  "n_papers_train": 9,
+  "n_papers_test": 3,
+  "n": 42,
+  "MAE": 29.929,
+  "RMSE": 33.033,
+  "R2": -0.686
+ },
+ "random_kfold_control": {
+  "label": "含同源泄漏，不可作为主结论",
+  "reason": "同一篇文献的多条记录被随机分到训练与测试两侧，模型可记住该文献的均值",
+  "overall": {
+   "n": 177,
+   "MAE": 25.429,
+   "RMSE": 30.003,
+   "R2": 0.115
+  },
+  "gap_vs_group_kfold_MAE": 1.198
+ },
+ "conformal": {
+  "method": "split-conformal, |residual| 的 90% 分位数",
+  "q_hat": 48.86,
+  "nominal_coverage": 0.9,
+  "empirical_coverage_holdout": 0.905,
+  "n_test": 42
+ },
+ "feature_missing_rate": {
+  "temp_C": 0.802,
+  "time_min": 0.91,
+  "ligand_amount": 1.0,
+  "precursor_ratio": 1.0
+ },
+ "shap_top_features": [
+  {
+   "feature": "temp_C",
+   "mean_abs_shap": 8.685
+  },
+  {
+   "feature": "solvent_family",
+   "mean_abs_shap": 3.265
+  },
+  {
+   "feature": "time_min",
+   "mean_abs_shap": 0.307
+  },
+  {
+   "feature": "system",
+   "mean_abs_shap": 0.0
+  },
+  {
+   "feature": "ligand_family",
+   "mean_abs_shap": 0.0
+  },
+  {
+   "feature": "method_family",
+   "mean_abs_shap": 0.0
+  },
+  {
+   "feature": "ligand_amount",
+   "mean_abs_shap": 0.0
+  },
+  {
+   "feature": "precursor_ratio",
+   "mean_abs_shap": 0.0
+  }
+ ],
+ "shap_base_value": 54.887,
+ "dataset_sha256": "175b8ec3885fef28c787e792a22f38a7ba2404505eb246862c2a78087f37af1a"
+}
