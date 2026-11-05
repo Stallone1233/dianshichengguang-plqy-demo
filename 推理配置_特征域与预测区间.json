@@ -1,0 +1,72 @@
+{
+ "features": [
+  "system",
+  "method_family",
+  "solvent_family",
+  "ligand_family",
+  "temp_C",
+  "time_min",
+  "ligand_amount",
+  "precursor_ratio"
+ ],
+ "cat": [
+  "system",
+  "method_family",
+  "solvent_family",
+  "ligand_family"
+ ],
+ "num": [
+  "temp_C",
+  "time_min",
+  "ligand_amount",
+  "precursor_ratio"
+ ],
+ "categories": {
+  "system": [
+   "CsPbBr3",
+   "CsPbCl3",
+   "CsPbI3",
+   "mixed",
+   "other"
+  ],
+  "method_family": [
+   "LARP",
+   "hot_injection",
+   "other",
+   "post_exchange",
+   "unknown"
+  ],
+  "solvent_family": [
+   "ODE",
+   "ODE+chloroform",
+   "ODE+toluene",
+   "limonene",
+   "toluene+DMF",
+   "unknown"
+  ],
+  "ligand_family": [
+   "DDAB",
+   "OA",
+   "OA+OAm",
+   "OA+OLA",
+   "TOP",
+   "other",
+   "unknown"
+  ]
+ },
+ "q_hat": 48.85726080618026,
+ "n_train": 177,
+ "n_papers": 12,
+ "train_ranges": {
+  "temp_C": [
+   160.0,
+   350.0
+  ],
+  "time_min": [
+   0.08333,
+   180.0
+  ]
+ },
+ "n_records": 213,
+ "traceable_pct": 90.1
+}
