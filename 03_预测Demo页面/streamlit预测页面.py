@@ -56,6 +56,31 @@ st.markdown(
     "让小团队先算一遍，再决定做哪几组实验。"
 )
 
+# 数据来源清单：平时折叠着不吵人，录屏和答辩时展开，让评委自己看 DOI。
+# 清单来自 出处表，缺文件时整块隐藏，不影响预测功能。
+SRC_JSON = os.path.join(MODEL_DIR, "数据来源_12篇.json")
+if os.path.exists(SRC_JSON):
+    _src = json.load(open(SRC_JSON, encoding="utf-8"))
+    with st.expander(f"数据来源：{len(_src)} 篇文献，{TRACE_PCT:.1f}% 可回溯到 DOI"):
+        st.caption(
+            "每条记录都保留原文表格位置（表号 + 行号）。点最后一列的 DOI 可直接打开原文。"
+        )
+        st.dataframe(
+            pd.DataFrame([{
+                "编号": r["编号"],
+                "期刊": r["期刊"],
+                "年份": r["年份"],
+                "记录数": r["记录数"],
+                "原文（点开）": r["链接"],
+            } for r in _src]),
+            hide_index=True,
+            use_container_width=True,
+            column_config={
+                "原文（点开）": st.column_config.LinkColumn(
+                    "原文（点开）", display_text=r"https://doi\.org/(.*)"),
+            },
+        )
+
 with st.sidebar:
     st.header("关于这个工具")
     st.markdown(
