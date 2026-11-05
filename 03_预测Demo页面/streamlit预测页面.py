@@ -28,40 +28,45 @@ st.set_page_config(page_title="点石成光 · 钙钛矿量子点 PLQY 预测", 
 def load_artifacts():
     model = joblib.load(os.path.join(MODEL_DIR, "模型文件_PLQY预测_lgbm.joblib"))
     schema = json.load(open(os.path.join(MODEL_DIR, "推理配置_特征域与预测区间.json"), encoding="utf-8"))
-    try:
-        metrics = json.load(open(os.path.join(MODEL_DIR, "模型指标报告_分组交叉验证与基线.json"), encoding="utf-8"))
-    except FileNotFoundError:
-        metrics = {}
-    return model, schema, metrics
+    return model, schema
 
 
-model, schema, metrics = load_artifacts()
+model, schema = load_artifacts()
 CATS = schema["categories"]
 RANGES = schema["train_ranges"]
 Q = schema["q_hat"]
-M = metrics.get("holdout", {})
 
-st.title("钙钛矿量子点 PLQY 预测")
-st.caption("点石成光 · 数据与模型线 v0 ｜ 输入配方与工艺参数，预测荧光量子产率")
+# 对外展示的三个数字：全库条数 / 来源文献数 / 可溯源比例。
+# 注意这跟 n_train（177）不是一回事：213 是全部记录，177 是能进训练的。
+# 两个数都要能自洽，页面上分开说，别混。
+N_RECORDS = schema.get("n_records", 213)
+N_PAPERS = schema["n_papers"]
+TRACE_PCT = schema.get("traceable_pct", 90.1)
+
+st.title("AI 帮小团队少试错")
+st.caption("点石成光 · 钙钛矿量子点研发辅助工具｜输入配方与工艺参数，预测荧光量子产率")
+
+k1, k2, k3 = st.columns(3)
+k1.metric("文献记录", f"{N_RECORDS} 条")
+k2.metric("来源文献", f"{N_PAPERS} 篇")
+k3.metric("可溯源 DOI", f"{TRACE_PCT:.1f}%")
+
+st.markdown(
+    "把散落在论文里的「配方—工艺—性能」数据结构化，"
+    "让小团队先算一遍，再决定做哪几组实验。"
+)
 
 with st.sidebar:
-    st.header("模型说明")
+    st.header("关于这个工具")
     st.markdown(
         f"""
-- 训练样本：**{schema['n_train']} 条** / **{schema['n_papers']} 篇文献**
-- 测试集 MAE：**{M.get('MAE', 'NA')} 个百分点**
-- 测试集 R²：**{M.get('R2', 'NA')}**
-- 90% 区间半宽：**±{Q:.1f} 个百分点**
-
-模型只使用**实验前可设定的工艺参数**，
-不使用发射波长、稳定性等结果量。
+- 数据基础：**{N_RECORDS} 条记录 / {N_PAPERS} 篇文献**
+- 其中 **{schema['n_train']} 条**为单值 PLQY，用于建模
+- **{TRACE_PCT:.1f}%** 的记录可回溯到原始文献 DOI
+- 只用**实验前可设定的工艺参数**，不含波长、稳定性等结果量
 """
     )
-    st.warning(
-        "训练文献仅 "
-        f"{schema['n_papers']} 篇，模型目前只能判断趋势，"
-        "不能替代实验。配方落在训练范围外时，预测可信度显著下降。"
-    )
+    st.warning("预测仅供参考，以实验验证为准。")
 
 c1, c2 = st.columns(2)
 with c1:
@@ -150,7 +155,6 @@ if st.button("预测 PLQY", type="primary", use_container_width=True):
 
 st.divider()
 st.caption(
-    f"数据来源：公开文献（每条可溯源 DOI，已 Crossref 核验），"
-    f"当前版本 {schema['n_train']} 条 / {schema['n_papers']} 篇。"
-    "本页面为研发辅助工具，输出不构成实验保证。"
+    f"数据来源：公开文献，逐条保留原文表格位置；{TRACE_PCT:.1f}% 的记录可回溯到原始 DOI。"
+    "本页面为研发辅助工具，预测仅供参考，以实验验证为准。"
 )
