@@ -57,17 +57,6 @@
  "q_hat": 48.85726080618026,
  "n_train": 177,
  "n_papers": 12,
- "metrics": {
-  "split": "GroupShuffleSplit(test_size=0.2, groups=doi)",
-  "n_train": 135,
-  "n_test": 42,
-  "n_papers_train": 9,
-  "n_papers_test": 3,
-  "n": 42,
-  "MAE": 29.929,
-  "RMSE": 33.033,
-  "R2": -0.686
- },
  "train_ranges": {
   "temp_C": [
    160.0,
@@ -77,5 +66,7 @@
    0.08333,
    180.0
   ]
- }
+ },
+ "n_records": 213,
+ "traceable_pct": 90.1
 }
